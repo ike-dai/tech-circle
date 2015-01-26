@@ -1,0 +1,22 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+sudo apt-get update
+sudo apt-get -y install docker.io
+sudo docker pull ubuntu:14.04
+sudo usermod -G docker vagrant
+SCRIPT
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu"
+  config.vm.network "private_network", ip: "10.2.2.2"
+  config.vm.provider "virtualbox" do |vb|
+     #vb.customize ["modifyvm", :id, "--memory", "1024"]
+     vb.memory = 1024
+  end
+  config.vm.synced_folder "data", "/tmp/host_dir" 
+  config.vm.provision "shell", inline: $script
+end
